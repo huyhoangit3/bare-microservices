@@ -1,0 +1,26 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-service
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/huyhoangit3/microservices-config-data.git
+#          searchPaths: gateway-service, auth-service
+          # spring looking for main branch by default
+          default-label: master
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    # Pull down a local copy of the registry
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
