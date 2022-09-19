@@ -29,21 +29,28 @@ public class JwtUtils {
         Set<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
-//                .claim("authorities", authorities)
+                .setSubject(String.format("%s,%s", userPrincipal.getId(), userPrincipal.getUsername()))
+                .claim("authorities", userPrincipal.getAuthorities().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
+    public String getSubject(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
-
-//    public List<String> getAuthoritiesFromJwtToken(String token) {
-//        return (List<String>)Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("authorities");
-//    }
 
     public boolean validateJwtToken(String authToken) {
         try {
