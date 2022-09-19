@@ -44,7 +44,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
 //                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 //                UsernamePasswordAuthenticationToken authentication =
 //                        new UsernamePasswordAuthenticationToken(
@@ -85,12 +84,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private UserDetails getUserDetails(String token) {
         UserDetailsImpl userDetails = new UserDetailsImpl();
         Claims claims = jwtUtils.parseClaims(token);
-        String subject = (String) claims.get(Claims.SUBJECT);
+        String username = (String) claims.get(Claims.SUBJECT);
         String roles = (String) claims.get("authorities");
 
         roles = roles.replace("[", "").replace("]", "");
         String[] roleNames = roles.split(",");
         Set<SimpleGrantedAuthority> authorities = Arrays.stream(roleNames).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+        userDetails.setUsername(username);
         userDetails.setAuthorities(authorities);
         return userDetails;
     }

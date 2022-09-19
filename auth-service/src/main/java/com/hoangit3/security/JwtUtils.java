@@ -29,7 +29,7 @@ public class JwtUtils {
         Set<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 
         return Jwts.builder()
-                .setSubject(String.format("%s,%s", userPrincipal.getId(), userPrincipal.getUsername()))
+                .setSubject(userPrincipal.getUsername())
                 .claim("authorities", userPrincipal.getAuthorities().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
