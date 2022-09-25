@@ -20,5 +20,5 @@ eureka:
     preferIpAddress: true
 hoangit3:
   app:
-    jwtExpirationMs: 60000
+    jwtExpirationMs: 600000
     jwtSecret: hoangit3

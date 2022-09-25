@@ -5,7 +5,8 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class UsernameAuthoritiesDto {
+public class AuthenticatedUserInfoDto {
+    private Long id;
     private String username;
     private Set<String> authorities;
 }

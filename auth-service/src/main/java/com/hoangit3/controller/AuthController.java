@@ -1,6 +1,6 @@
 package com.hoangit3.controller;
 
-import com.hoangit3.dto.UsernameAuthoritiesDto;
+import com.hoangit3.dto.AuthenticatedUserInfoDto;
 import com.hoangit3.model.ERole;
 import com.hoangit3.model.Role;
 import com.hoangit3.model.User;
@@ -60,13 +60,14 @@ public class AuthController {
     }
 
     @PostMapping(path = "/authinfo")
-    public ResponseEntity<UsernameAuthoritiesDto> authorizationInformation() {
-        UserDetails userDetails = getPrincipal();
-        UsernameAuthoritiesDto usernameAuthoritiesDto = new UsernameAuthoritiesDto();
-        usernameAuthoritiesDto.setUsername(userDetails.getUsername());
+    public ResponseEntity<AuthenticatedUserInfoDto> authorizationInformation() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) getPrincipal();
+        AuthenticatedUserInfoDto authenticatedUserInfoDto = new AuthenticatedUserInfoDto();
+        authenticatedUserInfoDto.setId(userDetails.getId());
+        authenticatedUserInfoDto.setUsername(userDetails.getUsername());
         Set<String> authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
-        usernameAuthoritiesDto.setAuthorities(authorities);
-        return ResponseEntity.ok(usernameAuthoritiesDto);
+        authenticatedUserInfoDto.setAuthorities(authorities);
+        return ResponseEntity.ok(authenticatedUserInfoDto);
     }
 
     private UserDetails getPrincipal() {
